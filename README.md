@@ -1,6 +1,6 @@
 # Nesneye Dayalı Programlama Proje Ödevi
-[![Frontend][Frontend-image]][Frontend-url]
-[![Responsive][Responsive-image]][Responsive-url]
+[![CSharp][CSharp-image]][CSharp-url]
+[![App][App-image]][App-url]
 
 > Sakarya Üniversitesi - Bilgisayar Mühendisliği Nesneye Dayalı Programlama dersi için güzellik merkezi - kuafor yönetim uygulaması
 
@@ -23,7 +23,7 @@ Yapılan işlemlerin maliyeti ve ayrıntısı verilmektedir.
 
 [linkedin-url]: https://www.linkedin.com/in/ahmetgorkemyavuz
 [repo-url]: https://github.com/ahmtgrkem/Personal-Portfolio
-[Frontend-image]: https://img.shields.io/badge/C#-WindowsForms-orange
-[Frontend-url]: https://img.shields.io/badge/C#-WindowsForms-orange
-[Responsive-image]: https://img.shields.io/badge/BeautySalonApp-97c900
-[Responsive-url]: https://img.shields.io/badge/BeautySalonApp-97c900
+[CSharp-image]: https://img.shields.io/badge/WindowsForms-orange
+[CSharp-url]: https://img.shields.io/badge/WindowsForms-orange
+[App-image]: https://img.shields.io/badge/BeautySalonApp-97c900
+[App-url]: https://img.shields.io/badge/BeautySalonApp-97c900
