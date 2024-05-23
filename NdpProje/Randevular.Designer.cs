@@ -30,6 +30,7 @@
         {
             components = new System.ComponentModel.Container();
             panel1 = new Panel();
+            totalEarningsLabel = new Label();
             comboBox1 = new ComboBox();
             label8 = new Label();
             maskedTextBox2 = new MaskedTextBox();
@@ -64,6 +65,7 @@
             // 
             panel1.BackColor = Color.PeachPuff;
             panel1.BorderStyle = BorderStyle.Fixed3D;
+            panel1.Controls.Add(totalEarningsLabel);
             panel1.Controls.Add(comboBox1);
             panel1.Controls.Add(label8);
             panel1.Controls.Add(maskedTextBox2);
@@ -82,6 +84,16 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(305, 575);
             panel1.TabIndex = 11;
+            // 
+            // totalEarningsLabel
+            // 
+            totalEarningsLabel.AutoSize = true;
+            totalEarningsLabel.Font = new Font("League Spartan", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            totalEarningsLabel.Location = new Point(22, 523);
+            totalEarningsLabel.Name = "totalEarningsLabel";
+            totalEarningsLabel.Size = new Size(147, 30);
+            totalEarningsLabel.TabIndex = 17;
+            totalEarningsLabel.Text = "Toplam Kazanç:";
             // 
             // comboBox1
             // 
@@ -209,6 +221,7 @@
             dateTimePicker1.Name = "dateTimePicker1";
             dateTimePicker1.Size = new Size(225, 27);
             dateTimePicker1.TabIndex = 2;
+            dateTimePicker1.ValueChanged += dateTimePicker1_ValueChanged;
             // 
             // randevuVerBtn
             // 
@@ -354,5 +367,6 @@
         private Button randevuGnclBtn;
         private BindingSource customerBindingSource;
         private ListBox listBox1;
+        private Label totalEarningsLabel;
     }
 }

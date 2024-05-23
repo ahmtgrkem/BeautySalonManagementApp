@@ -48,6 +48,26 @@ namespace NdpProje
             ComboBoxuGuncelle();
         }
 
+        private void ToplamKazanciGuncelle()
+        {
+            decimal toplamKazanc = 0;
+            DateTime selectedDate = dateTimePicker1.Value.Date;
+
+            foreach (var item in listBox1.Items)
+            {
+                string[] randevuBilgileri = item.ToString().Split('|');
+                DateTime randevuTarihi = Convert.ToDateTime(randevuBilgileri[0].Trim());
+
+                if (randevuTarihi.Date == selectedDate)
+                {
+                    int serviceFee = Convert.ToInt32(randevuBilgileri[7].Trim());
+                    toplamKazanc += serviceFee;
+                }
+            }
+
+            totalEarningsLabel.Text = $"Toplam Kazanç: {toplamKazanc} TL";
+        }
+
         private void RandevulariGoster()
         {
             listBox1.Items.Clear();
@@ -69,11 +89,16 @@ namespace NdpProje
                 listBox1.Items.Add("Randevu bulunamadı.");
             }
 
+            // Toplam kazancı güncelle
+            ToplamKazanciGuncelle();
         }
+
+        private Dictionary<string, int> hizmetBilgileri = new Dictionary<string, int>();
 
         private void ComboBoxuGuncelle()
         {
             comboBox1.Items.Clear();
+            hizmetBilgileri.Clear();
 
             // services.txt dosyasından hizmet bilgilerini oku ve ComboBox'a ekle
             if (File.Exists(IslemlerDosyaYolu))
@@ -88,7 +113,9 @@ namespace NdpProje
                         if (parts.Length == 2)
                         {
                             string serviceName = parts[0];
+                            int serviceFee = int.Parse(parts[1]);
                             comboBox1.Items.Add(serviceName);
+                            hizmetBilgileri[serviceName] = serviceFee;
                         }
                     }
                 }
@@ -114,8 +141,17 @@ namespace NdpProje
                 return;
             }
 
+            if (dateTimePicker1.Value.Date < DateTime.Now.Date)
+            {
+                MessageBox.Show("Güncel tarihten önce bir randevu veremezsiniz.", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            string selectedService = comboBox1.SelectedItem.ToString();
+            int serviceFee = hizmetBilgileri[selectedService];
+
             // Yeni randevu bilgilerini oluştur
-            string yeniRandevu = $"{dateTimePicker1.Value.ToShortDateString()} | {maskedTextBox1.Text} | {customerNameBox.Text} | {customerLastnameBox.Text} | {numericUpDown1.Value} | {maskedTextBox2.Text} | {comboBox1.Text}";
+            string yeniRandevu = $"{dateTimePicker1.Value.ToShortDateString()} | {maskedTextBox1.Text} | {customerNameBox.Text} | {customerLastnameBox.Text} | {numericUpDown1.Value} | {maskedTextBox2.Text} | {selectedService} | {serviceFee}";
 
             // Mevcut randevuları kontrol et
             foreach (var item in listBox1.Items)
@@ -142,6 +178,13 @@ namespace NdpProje
             customerLastnameBox.Clear();
             maskedTextBox2.Clear();
             comboBox1.SelectedIndex = -1;
+
+            // Toplam kazancı güncelle
+            ToplamKazanciGuncelle();
+        }
+        private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
+        {
+            ToplamKazanciGuncelle();
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -166,6 +209,9 @@ namespace NdpProje
                 numericUpDown1.Value = Convert.ToDecimal(randevuBilgileri[4].Trim());
                 maskedTextBox2.Text = randevuBilgileri[5].Trim(); // Telefon
                 comboBox1.SelectedItem = randevuBilgileri[6].Trim(); // Hizmet
+
+                // Hizmet ücretini göster
+                int serviceFee = hizmetBilgileri[randevuBilgileri[6].Trim()];
             }
         }
 
@@ -176,8 +222,11 @@ namespace NdpProje
                 // Seçilen randevunun indeksini al
                 int selectedIndex = listBox1.SelectedIndex;
 
+                string selectedService = comboBox1.SelectedItem.ToString();
+                int serviceFee = hizmetBilgileri[selectedService];
+
                 // Yeni randevu bilgilerini al
-                string yeniRandevu = $"{dateTimePicker1.Value.ToShortDateString()} | {maskedTextBox1.Text} | {customerNameBox.Text} | {customerLastnameBox.Text} | {numericUpDown1.Value} | {maskedTextBox2.Text} | {comboBox1.SelectedItem}";
+                string yeniRandevu = $"{dateTimePicker1.Value.ToShortDateString()} | {maskedTextBox1.Text} | {customerNameBox.Text} | {customerLastnameBox.Text} | {numericUpDown1.Value} | {maskedTextBox2.Text} | {selectedService} | {serviceFee}";
 
                 // Yeni randevuyu listbox'ta güncelle
                 listBox1.Items[selectedIndex] = yeniRandevu;
@@ -186,6 +235,9 @@ namespace NdpProje
                 File.WriteAllLines(randevularDosyaYolu, listBox1.Items.Cast<string>().ToArray());
 
                 MessageBox.Show("Randevu başarıyla güncellendi.", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // Toplam kazancı güncelle
+                ToplamKazanciGuncelle();
             }
             else
             {
@@ -203,12 +255,14 @@ namespace NdpProje
                 File.WriteAllLines(randevularDosyaYolu, listBox1.Items.Cast<string>().ToArray());
 
                 MessageBox.Show("Randevu başarıyla silindi.", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // Toplam kazancı güncelle
+                ToplamKazanciGuncelle();
             }
             else
             {
                 MessageBox.Show("Lütfen silinecek bir randevu seçin.", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-
         }
 
         private void customerNameBox_KeyPress(object sender, KeyPressEventArgs e)
@@ -230,5 +284,6 @@ namespace NdpProje
                 e.Handled = true;
             }
         }
+
     }
 }
